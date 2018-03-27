@@ -1,0 +1,25 @@
+{
+  "name": "my-site",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "start": "node -r babel-register ./www"
+  },
+  "dependencies": {
+    "axios": "^0.17.1",
+    "body-parser": "~1.18.2",
+    "chalk": "^2.3.0",
+    "cookie-parser": "~1.4.3",
+    "debug": "~2.6.9",
+    "express": "~4.15.5",
+    "fluent-ffmpeg": "^2.1.2",
+    "fs-extra": "^5.0.0",
+    "glob": "^7.1.2",
+    "jade": "~1.11.0",
+    "m3u8-parser": "^4.0.0"
+  },
+  "devDependencies": {
+    "babel-preset-env": "^1.6.1",
+    "babel-register": "^6.26.0"
+  }
+}

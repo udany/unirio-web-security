@@ -1,0 +1,6 @@
+# dependencies
+EvilSite/node_modules
+MySite/node_modules
+
+# Idea workspace
+.idea/*
