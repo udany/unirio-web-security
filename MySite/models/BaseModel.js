@@ -39,21 +39,48 @@ class BaseModel {
 
     static save(db, obj) {
         return new Promise((resolve, reject) => {
-            const update = obj[this.id];
+            const update = !!obj[this.id];
 
             if (update) {
-                db.run(`INSERT INTO ${this.table} VALUES (?)`);
-            } else {
+                let id = obj[this.id];
+
                 let values = [];
 
                 for (let field of this.fields){
+                    if (field === this.id) continue;
+
                     let val = obj[field];
                     if (typeof val === 'string') val = `"${val}"`;
+                    val = `field = ${val}`;
 
                     values.push(val);
                 }
 
-                db.run(`INSERT INTO ${this.table} VALUES (${values.join(', ')})`, (err) => {
+                db.run(`UPDATE ${this.table} SET ${values.join(', ')} WHERE ${this.id} = ${id}`, (err) => {
+                    if (err) {
+                        reject(err);
+                    } else {
+                        resolve(true);
+                    }
+                });
+            } else {
+                let fields = [];
+                let values = [];
+
+                for (let field of this.fields){
+                    if (field === this.id) continue;
+                    if (!obj.hasOwnProperty(field)) continue;
+
+                    let val = obj[field];
+                    if (typeof val === 'string') val = `"${val}"`;
+
+                    values.push(val);
+                    fields.push(field);
+                }
+
+                let sql = `INSERT INTO ${this.table} (${fields.join(', ')}) VALUES (${values.join(', ')})`;
+
+                db.run(sql, [], (err) => {
                     if (err) {
                         reject(err);
                     } else {

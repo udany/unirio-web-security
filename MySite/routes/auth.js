@@ -18,7 +18,10 @@ router.get('/set', async function (req, res, next)  {
     session.uid = Math.randomInt(50);
     console.log(session.uid);
 
-    res.send("OK");
+    let u = new User({name: 'Coelho', email: 'daniel.coelho@uniriotec.br'});
+    await u.save(db);
+
+    res.send("OK = "+session.uid);
 });
 
 router.get('/get', async function (req, res, next)  {
