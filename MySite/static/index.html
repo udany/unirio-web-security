@@ -12,6 +12,7 @@
               integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
               crossorigin="anonymous">
 
+        <script src="Date.js"></script>
         <script src="util.js"></script>
 
         <script>
@@ -59,6 +60,17 @@
                     <button class="btn btn-sm btn-outline-success" type="submit" @click="editInfo">Edit profile</button>
                 </form>
             </div>
+
+            <div class="card">
+                <div class="card-header">
+                    Messages
+                </div>
+                <div class="card-body">
+                    <div v-for="m in messages">
+                        <b>{{messageTime(m)}}</b> {{m.text}}
+                    </div>
+                </div>
+            </div>
         </div>
     </body>
 
@@ -71,7 +83,8 @@
                     name: '',
                     email: '',
                     password: ''
-                }
+                },
+                messages: []
             },
             watch: {
                 'session.user': function() {
@@ -88,9 +101,15 @@
                     if (r.success) {
                         this.$refs.editForm.submit();
                     }
+                },
+                messageTime(msg) {
+                    let dt = new Date(msg.time);
+                    return dt.format('d/m/Y - H:i:s');
                 }
             },
-            mounted: async () => {
+            mounted: async function() {
+                this.messages = await getData('/message/list');
+                debugger;
             }
         });
 
@@ -112,7 +131,7 @@
                     }
                 }
             },
-            mounted: async () => {
+            mounted: async function() {
             }
         })
     </script>

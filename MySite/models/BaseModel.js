@@ -7,8 +7,10 @@ class BaseModel {
 
     fill(data) {
         for (let field of this.constructor.fields) {
-            if (data.hasOwnProperty(field)){
-                this[field] = data[field];
+            let dbfield = field.toLowerCase();
+
+            if (data.hasOwnProperty(dbfield)){
+                this[field] = data[dbfield];
             }
         }
     }
@@ -60,6 +62,10 @@ class BaseModel {
                 val = `${field} = ${val}`;
 
                 filterClauses.push(val);
+            }
+
+            if (!filterClauses.length) {
+                filterClauses = ['1 = 1'];
             }
 
             let sql = `SELECT * FROM ${this.table} WHERE ${filterClauses.join(', ')}`;
