@@ -48,15 +48,17 @@ class BaseModel {
 
                 for (let field of this.fields){
                     if (field === this.id) continue;
+                    if (!obj.hasOwnProperty(field)) continue;
 
                     let val = obj[field];
                     if (typeof val === 'string') val = `"${val}"`;
-                    val = `field = ${val}`;
+                    val = `${field} = ${val}`;
 
                     values.push(val);
                 }
 
-                db.run(`UPDATE ${this.table} SET ${values.join(', ')} WHERE ${this.id} = ${id}`, (err) => {
+                let sql = `UPDATE ${this.table} SET ${values.join(', ')} WHERE ${this.id} = ${id}`;
+                db.run(sql, [], (err) => {
                     if (err) {
                         reject(err);
                     } else {
