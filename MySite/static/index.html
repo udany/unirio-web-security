@@ -38,11 +38,11 @@
                         </ul>
 
                         <!-- Login -->
-                        <form class="form-inline my-2 my-lg-0" v-if="!session.logged">
-                            <input class="form-control form-control-sm mr-2" placeholder="Email" type="email">
-                            <input class="form-control form-control-sm mr-2" placeholder="Password" type="password">
-                            <button class="btn btn-sm btn-outline-success" type="submit">Login</button>
-                        </form>
+                        <div class="form-inline my-2 my-lg-0" v-if="!session.logged">
+                            <input class="form-control form-control-sm mr-2" placeholder="Email" type="email" v-model="user.email">
+                            <input class="form-control form-control-sm mr-2" placeholder="Password" type="password" v-model="user.password">
+                            <button class="btn btn-sm btn-outline-success" @click="login">Login</button>
+                        </div>
                     </nav>
                 </div>
             </div>
@@ -68,9 +68,16 @@
         let menu = new Vue({
             el: '#menu',
             data: {
-                session: Session
+                session: Session,
+                user: {
+                    email: '',
+                    password: ''
+                }
             },
             methods: {
+                async login() {
+                    let r = await postData('/auth/login', this.user);
+                }
             },
             mounted: async function () {
             }

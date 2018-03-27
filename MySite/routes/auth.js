@@ -13,15 +13,25 @@ router.get('/test', async function (req, res, next) {
     res.send(data.title);
 });
 
-router.get('/login', async function (req, res, next) {
+router.post('/login', async function (req, res, next) {
     let {session, body} = req;
 
     if (body.email){
-
         session.uid = 1;
+
+        let u = await User.select(db, {email: body.email}, true);
+
+        let password = User.HashPassword(body.password);
+
+        if (password === u.password) {
+            session.uid = u.id;
+
+            res.send({success: true, u});
+            return;
+        }
     }
 
-    res.send({success: true});
+    res.send({success: false});
 });
 
 router.get('/status', async function (req, res, next) {

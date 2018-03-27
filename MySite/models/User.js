@@ -7,8 +7,12 @@ class User extends BaseModel {
     }
 
     setPassword(pwd) {
-        this.password = md5(pwd);
+        this.password = this.constructor.HashPassword(pwd);
         return this;
+    }
+
+    static HashPassword(pwd) {
+        return md5(pwd);
     }
 }
 

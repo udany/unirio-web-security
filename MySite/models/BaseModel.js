@@ -34,7 +34,7 @@ class BaseModel {
         this.table = table;
     }
 
-    static getById(db, id, raw) {
+    static getById(db, id, raw = false) {
         return new Promise((resolve, reject) => {
             let sql = `SELECT * FROM ${this.table} WHERE ${this.id} = ${id}`;
 
@@ -44,6 +44,34 @@ class BaseModel {
                 }
 
                 resolve(raw ? row : new this(row));
+            });
+        });
+    }
+
+    static select(db, filters, single = false, raw = false) {
+        return new Promise((resolve, reject) => {
+            let filterClauses = [];
+
+            for (let field in filters){
+                if (!filters.hasOwnProperty(field)) continue;
+
+                let val = filters[field];
+                if (typeof val === 'string') val = `"${val}"`;
+                val = `${field} = ${val}`;
+
+                filterClauses.push(val);
+            }
+
+            let sql = `SELECT * FROM ${this.table} WHERE ${filterClauses.join(', ')}`;
+
+            db.all(sql, [], (err, rows) => {
+                if (err) {
+                    reject(err.message);
+                }
+
+                rows = raw ? rows : rows.map(r => new this(r));
+
+                resolve(single ? (rows.length ? rows[0] : null) : rows);
             });
         });
     }

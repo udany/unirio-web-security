@@ -12,9 +12,9 @@ async function postData(url, data) {
         redirect: 'follow', // *manual, follow, error
     });
 
-    let data = await result.json();
+    let resultData = await result.json();
 
-    return data;
+    return resultData;
 }
 
 async function getData(url) {
