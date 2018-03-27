@@ -17,6 +17,17 @@ class BaseModel {
         return this.constructor.save(db, this);
     }
 
+    toJson() {
+        let data = {};
+        for (let field of this.constructor.fields) {
+            if (this.hasOwnProperty(field)){
+                data[field] = this[field];
+            }
+        }
+
+        return data;
+    }
+
     static config({table, fields, id = 'id'}) {
         this.fields = fields;
         this.id = id;

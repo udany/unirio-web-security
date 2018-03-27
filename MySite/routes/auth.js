@@ -5,7 +5,7 @@ import User from "../models/User";
 
 let router = express.Router();
 
-router.get('/test', async function (req, res, next)  {
+router.get('/test', async function (req, res, next) {
     let {session} = req;
 
     let {data} = await axios.get('https://ghibliapi.herokuapp.com/films/58611129-2dbc-4a81-a72f-77ddfc1b1b49');
@@ -13,23 +13,27 @@ router.get('/test', async function (req, res, next)  {
     res.send(data.title);
 });
 
-router.get('/set', async function (req, res, next)  {
-    let {session} = req;
-    session.uid = Math.randomInt(50);
-    console.log(session.uid);
+router.get('/login', async function (req, res, next) {
+    let {session, body} = req;
 
-    let u = new User({id: 2, name: 'Daniel Coelho', email: 'daniel.coelho@uniriotec.br'});
-    await u.save(db);
+    if (body.email){
 
-    res.send("OK = "+session.uid);
+        session.uid = 1;
+    }
+
+    res.send({success: true});
 });
 
-router.get('/get', async function (req, res, next)  {
+router.get('/status', async function (req, res, next) {
     let {session} = req;
 
-    let u = await User.getById(db, 1);
+    if (session.uid) {
+        let u = await User.getById(db, session.uid);
 
-    res.send(u);
+        res.send({logged: true, user: u});
+    } else {
+        res.send({logged: false});
+    }
 });
 
 module.exports.path = '/auth';

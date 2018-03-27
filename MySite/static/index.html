@@ -8,80 +8,71 @@
         <script src="https://cdn.jsdelivr.net/npm/vue"></script>
 
         <!-- Bootstrap CSS -->
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+              integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+              crossorigin="anonymous">
+
+        <script src="util.js"></script>
 
         <script>
-            async function loadUsers() {
-                let result = await fetch('/user/');
-                let data = await result.json();
-                
-                return data;
-            }
-            
-            //função para criar novo user
-            async function addUser(user){
-                let result =  await fetch(`/user/save?name=${user.name}&gender=${user.gender}&hairColor=${user.hairColor}`);
-                let data = await result.json();
-                
-                debugger;
-            }
         </script>
     </head>
-    <body>       
-        <div class="container" id="vue-users">
+    <body>
+        <!-- Head nav -->
+        <div class="container-fluid" id="menu">
+            <div class="row">
+                <div class="col">
+                    <nav class="navbar navbar-expand-md navbar-light bg-light">
+                        <a class="navbar-brand" href="#">My Site</a>
+                        <button class="navbar-toggler" type="button" data-toggle="collapse"
+                                data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                                aria-expanded="false" aria-label="Toggle navigation">
+                            <span class="navbar-toggler-icon"></span>
+                        </button>
+
+                        <!-- Menu -->
+                        <ul class="navbar-nav mr-auto">
+                            <li class="nav-item">
+                                <a class="nav-link" href="/">Home</a>
+                            </li>
+                        </ul>
+
+                        <!-- Login -->
+                        <form class="form-inline my-2 my-lg-0" v-if="!session.logged">
+                            <input class="form-control form-control-sm mr-2" placeholder="Email" type="email">
+                            <input class="form-control form-control-sm mr-2" placeholder="Password" type="password">
+                            <button class="btn btn-sm btn-outline-success" type="submit">Login</button>
+                        </form>
+                    </nav>
+                </div>
+            </div>
+        </div>
+
+        <div class="container" id="page">
             <h1>My Site</h1>
-            
-            <table class="table">
-                <tr>
-                    <th>Name</th>
-                    <th>Gender</th>
-                    <th>Hair Color</th>
-                </tr>
-                <tr v-for="user in users">
-                    <td>{{user.name}}</td>
-                    <td>{{user.gender}}</td>
-                    <td>{{user.hairColor}}</td>
-                </tr>
-            </table>
-            
-            <div class="form-group">
-                <label for="">Name</label>
-                <input type="text" class="form-control" v-model="tempUser.name">                
-            </div>
-            <div class="form-group">
-                <label for="">Gender</label>
-                <input type="text" class="form-control" v-model="tempUser.gender">
-            </div>
-            <div class="form-group">
-                <label for="">Hair Color</label>
-                <input type="text" class="form-control" v-model="tempUser.hairColor">
-            </div>
-            
-            <button class="btn btn-success" @click="addUser" >Adicionar usuário</button>
-        
         </div>
     </body>
-    
-    <script>        
+
+    <script>
         var app = new Vue({
-            el: '#vue-users',
+            el: '#page',
             data: {
-                msg: 'Hello Vue!',
-                users: [],
-                tempUser: {
-                    name: '',
-                    gender: '',
-                    hairColor: ''
-                }
+                session: Session,
             },
             methods: {
-                addUser: async function(){
-                    await addUser(this.tempUser);
-                }
             },
-            mounted: async function() {
-                let users = await loadUsers();
-                this.users = users;
+            mounted: async function () {
+            }
+        });
+
+        let menu = new Vue({
+            el: '#menu',
+            data: {
+                session: Session
+            },
+            methods: {
+            },
+            mounted: async function () {
             }
         })
     </script>
