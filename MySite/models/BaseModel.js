@@ -67,6 +67,7 @@ class BaseModel {
             db.all(sql, [], (err, rows) => {
                 if (err) {
                     reject(err.message);
+                    return;
                 }
 
                 rows = raw ? rows : rows.map(r => new this(r));

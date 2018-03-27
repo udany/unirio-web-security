@@ -5,20 +5,10 @@ import User from "../models/User";
 
 let router = express.Router();
 
-router.get('/test', async function (req, res, next) {
-    let {session} = req;
-
-    let {data} = await axios.get('https://ghibliapi.herokuapp.com/films/58611129-2dbc-4a81-a72f-77ddfc1b1b49');
-
-    res.send(data.title);
-});
-
 router.post('/login', async function (req, res, next) {
     let {session, body} = req;
 
     if (body.email){
-        session.uid = 1;
-
         let u = await User.select(db, {email: body.email}, true);
 
         let password = User.HashPassword(body.password);
@@ -29,6 +19,27 @@ router.post('/login', async function (req, res, next) {
             res.send({success: true, u});
             return;
         }
+    }
+
+    res.send({success: false});
+});
+
+router.post('/editInfo', async function (req, res, next) {
+    let {session, body} = req;
+
+    if (session.uid){
+        let u = await User.getById(db, session.uid);
+
+        u.email = body.email;
+        u.name = body.name;
+
+        if (body.password) u.setPassword(body.password);
+
+        await u.save(db);
+
+        res.send({success: true, u});
+
+        return;
     }
 
     res.send({success: false});

@@ -24,11 +24,6 @@
                 <div class="col">
                     <nav class="navbar navbar-expand-md navbar-light bg-light">
                         <a class="navbar-brand" href="#">My Site</a>
-                        <button class="navbar-toggler" type="button" data-toggle="collapse"
-                                data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
-                                aria-expanded="false" aria-label="Toggle navigation">
-                            <span class="navbar-toggler-icon"></span>
-                        </button>
 
                         <!-- Menu -->
                         <ul class="navbar-nav mr-auto">
@@ -38,10 +33,14 @@
                         </ul>
 
                         <!-- Login -->
-                        <div class="form-inline my-2 my-lg-0" v-if="!session.logged">
+                        <form @submit.prevent class="form-inline my-2 my-lg-0" v-if="!session.logged" ref="form">
                             <input class="form-control form-control-sm mr-2" placeholder="Email" type="email" v-model="user.email">
                             <input class="form-control form-control-sm mr-2" placeholder="Password" type="password" v-model="user.password">
-                            <button class="btn btn-sm btn-outline-success" @click="login">Login</button>
+                            <button class="btn btn-sm btn-outline-success" type="submit" @click="login">Login</button>
+                        </form>
+
+                        <div class="float-right" v-if="session.logged">
+                            Logged as <b>{{session.user.name}}</b>
                         </div>
                     </nav>
                 </div>
@@ -50,6 +49,16 @@
 
         <div class="container" id="page">
             <h1>My Site</h1>
+
+            <div v-if="session.logged">
+                <h3>Edit Profile</h3>
+                <form @submit.prevent class="form-inline" ref="editForm">
+                    <input class="form-control form-control-sm mr-2" placeholder="Name" v-model="editUser.name">
+                    <input class="form-control form-control-sm mr-2" placeholder="Email" type="email" v-model="editUser.email">
+                    <input class="form-control form-control-sm mr-2" placeholder="New Password" type="password" v-model="editUser.password">
+                    <button class="btn btn-sm btn-outline-success" type="submit" @click="editInfo">Edit profile</button>
+                </form>
+            </div>
         </div>
     </body>
 
@@ -58,10 +67,30 @@
             el: '#page',
             data: {
                 session: Session,
+                editUser: {
+                    name: '',
+                    email: '',
+                    password: ''
+                }
+            },
+            watch: {
+                'session.user': function() {
+                    if (this.session && this.session.user) {
+                        this.editUser = JSON.parse(JSON.stringify(this.session.user));
+                        this.editUser.password = '';
+                    }
+                }
             },
             methods: {
+                async editInfo() {
+                    let r = await postData('/auth/editInfo', this.editUser);
+
+                    if (r.success) {
+                        this.$refs.editForm.submit();
+                    }
+                }
             },
-            mounted: async function () {
+            mounted: async () => {
             }
         });
 
@@ -77,9 +106,13 @@
             methods: {
                 async login() {
                     let r = await postData('/auth/login', this.user);
+
+                    if (r.success) {
+                        this.$refs.form.submit();
+                    }
                 }
             },
-            mounted: async function () {
+            mounted: async () => {
             }
         })
     </script>
