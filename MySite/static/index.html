@@ -51,7 +51,30 @@
         <div class="container" id="page">
             <h1>My Site</h1>
 
-            <div v-if="session.logged">
+            <div class="card">
+                <div class="card-header">
+                    Messages
+                </div>
+                <div class="card-body">
+                    <div v-for="m in messages">
+                        <b>{{m.user.name}}</b>
+                        <i>{{messageTime(m)}}</i>
+                        <div v-html="m.text"></div>
+                    </div>
+                </div>
+                <div class="card-footer text-muted" v-if="session.logged">
+                    <div class="row">
+                        <div class="col col-md-11">
+                            <input class="form-control form-control-sm" placeholder="Message" v-model="newMsg">
+                        </div>
+                        <div class="col col-md-1">
+                            <button class="btn btn-sm btn-block btn-outline-success" type="submit" @click="sendMsg">Send</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div v-if="session.logged" class="mt-4">
                 <h3>Edit Profile</h3>
                 <form @submit.prevent class="form-inline" ref="editForm">
                     <input class="form-control form-control-sm mr-2" placeholder="Name" v-model="editUser.name">
@@ -61,16 +84,6 @@
                 </form>
             </div>
 
-            <div class="card">
-                <div class="card-header">
-                    Messages
-                </div>
-                <div class="card-body">
-                    <div v-for="m in messages">
-                        <b>{{messageTime(m)}}</b> {{m.text}}
-                    </div>
-                </div>
-            </div>
         </div>
     </body>
 
@@ -84,7 +97,8 @@
                     email: '',
                     password: ''
                 },
-                messages: []
+                messages: [],
+                newMsg: ''
             },
             watch: {
                 'session.user': function() {
@@ -105,11 +119,19 @@
                 messageTime(msg) {
                     let dt = new Date(msg.time);
                     return dt.format('d/m/Y - H:i:s');
-                }
+                },
+                async sendMsg() {
+                    let r = await postData('/message/post', {text: this.newMsg});
+
+                    if (r.success) {
+                        this.newMsg = '';
+                        r.msg.user = Session.user;
+                        this.messages.push(r.msg);
+                    }
+                },
             },
             mounted: async function() {
                 this.messages = await getData('/message/list');
-                debugger;
             }
         });
 

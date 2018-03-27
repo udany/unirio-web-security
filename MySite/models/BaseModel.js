@@ -11,6 +11,8 @@ class BaseModel {
 
             if (data.hasOwnProperty(dbfield)){
                 this[field] = data[dbfield];
+            }else if (data.hasOwnProperty(field)){
+                this[field] = data[field];
             }
         }
     }

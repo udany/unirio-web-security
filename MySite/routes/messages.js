@@ -9,17 +9,13 @@ let router = express.Router();
 router.post('/post', async function (req, res, next) {
     let {session, body} = req;
 
-    if (body.email){
-        let u = await User.select(db, {email: body.email}, true);
+    if (session.uid){
+        let msg = new Message({text: body.text, userId: session.uid, time: Date.now()})
+        await msg.save(db);
 
-        let password = User.HashPassword(body.password);
+        res.send({success: true, msg});
 
-        if (password === u.password) {
-            session.uid = u.id;
-
-            res.send({success: true, u});
-            return;
-        }
+        return;
     }
 
     res.send({success: false});
@@ -27,6 +23,12 @@ router.post('/post', async function (req, res, next) {
 
 router.get('/list', async function (req, res, next) {
     let messages = await Message.select(db, {});
+    let users = await User.select(db, {});
+
+    messages.forEach(async function (m) {
+        m.user = users.find(x => x.id === m.userId);
+    });
+
     res.send(messages);
 });
 
