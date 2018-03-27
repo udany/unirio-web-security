@@ -17,18 +17,6 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'static')));
 
-/// =SESSION
-let cookieSecret = 'keyboard cat';
-app.use(session({
-    secret: cookieSecret,
-    saveUninitialized: true,
-    resave: true,
-    cookie: {
-        maxAge: 60000,
-        httpOnly: true
-    }
-}));
-
 // Add all routes
 let glob = require('glob');
 let pattern = path.join(__dirname, 'routes', '*.js');
