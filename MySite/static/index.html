@@ -84,6 +84,16 @@
                 </form>
             </div>
 
+            <div v-if="!session.logged" class="mt-4">
+                <h3>Register</h3>
+                <form @submit.prevent class="form-inline" ref="registerForm">
+                    <input class="form-control form-control-sm mr-2" placeholder="Name" v-model="editUser.name">
+                    <input class="form-control form-control-sm mr-2" placeholder="Email" type="email" v-model="editUser.email">
+                    <input class="form-control form-control-sm mr-2" placeholder="New Password" type="password" v-model="editUser.password">
+                    <button class="btn btn-sm btn-outline-success" type="submit" @click="register">Edit profile</button>
+                </form>
+            </div>
+
         </div>
     </body>
 
@@ -109,6 +119,13 @@
                 }
             },
             methods: {
+                async register() {
+                    let r = await postData('/auth/register', this.editUser);
+
+                    if (r.success) {
+                        this.$refs.registerForm.submit();
+                    }
+                },
                 async editInfo() {
                     let r = await postData('/auth/editInfo', this.editUser);
 

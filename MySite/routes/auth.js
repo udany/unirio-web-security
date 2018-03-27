@@ -24,6 +24,24 @@ router.post('/login', async function (req, res, next) {
     res.send({success: false});
 });
 
+router.post('/register', async function (req, res, next) {
+    let {session, body} = req;
+
+    let u = new User({
+        email: body.email,
+        name: body.name
+    });
+    u.setPassword(body.password);
+
+    await u.save(db);
+
+    u = await User.select(db, {email: body.email}, true);
+
+    session.uid = u.id;
+
+    res.send({success: true, u});
+});
+
 router.post('/editInfo', async function (req, res, next) {
     let {session, body} = req;
 
