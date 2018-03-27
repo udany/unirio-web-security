@@ -32,5 +32,9 @@ router.get('/list', async function (req, res, next) {
     res.send(messages);
 });
 
+router.post('/test', async function (req, res, next) {
+    let {session, body} = req;
+});
+
 module.exports.path = '/message';
 module.exports.router = router;

